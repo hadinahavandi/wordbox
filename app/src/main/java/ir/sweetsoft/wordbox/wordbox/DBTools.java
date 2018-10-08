@@ -3,6 +3,9 @@ package ir.sweetsoft.wordbox.wordbox;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
@@ -35,17 +38,27 @@ public class DBTools {
                 e.printStackTrace();
             }
 
+
             String Dir=APPPath+ "/databases/";
             String dbPath = Dir+DBName;
-
-            File f = new File(FilePath);
-            Log.d("sweetsoft","importing DB Size:"+String.valueOf(f.length()));
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                dbPath=context.getDatabasePath(DBName).getPath();
+            }
+            File ImportingFile = new File(FilePath);
+            Log.d("sweetsoft","importing DB Size:"+String.valueOf(ImportingFile.length()));
+            Log.d("sweetsoft","importing DB File:"+dbPath);
             File DBFile = new File(dbPath);
-            if(DBFile.exists())
+            if(ImportingFile.exists())
             {
-                f.mkdirs();
-                File dir=new File(Dir);
-                dir.mkdirs();
+//                ImportingFile.mkdirs();
+//                File dir=new File(Dir);
+//                dir.mkdirs();
+                File WalFile=new File(dbPath+"-wal");
+                if(WalFile.exists())
+                    WalFile.delete();
+                File SHMFile=new File(dbPath+"-shm");
+                if(SHMFile.exists())
+                    SHMFile.delete();
                 InputStream in = new FileInputStream(FilePath);
                 OutputStream out = new FileOutputStream(dbPath);
 
@@ -81,13 +94,14 @@ public class DBTools {
                 Log.d("sweetsoft", "Exporting to FileDirectory:\n"+FileDirectory);
 
             } catch (PackageManager.NameNotFoundException e) {
-
                 e.printStackTrace();
             }
 
             String Dir=APPPath+ "/databases/";
             String dbPath = Dir+DBName;
-
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                dbPath=context.getDatabasePath(DBName).getPath();
+            }
 
             File f = new File(FileDirectory);
             File DBFile = new File(dbPath);
