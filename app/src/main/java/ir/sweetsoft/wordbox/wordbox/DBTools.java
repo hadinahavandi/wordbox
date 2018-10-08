@@ -47,12 +47,9 @@ public class DBTools {
             File ImportingFile = new File(FilePath);
             Log.d("sweetsoft","importing DB Size:"+String.valueOf(ImportingFile.length()));
             Log.d("sweetsoft","importing DB File:"+dbPath);
-            File DBFile = new File(dbPath);
+//            File DBFile = new File(dbPath);
             if(ImportingFile.exists())
             {
-//                ImportingFile.mkdirs();
-//                File dir=new File(Dir);
-//                dir.mkdirs();
                 File WalFile=new File(dbPath+"-wal");
                 if(WalFile.exists())
                     WalFile.delete();
@@ -103,15 +100,13 @@ public class DBTools {
                 dbPath=context.getDatabasePath(DBName).getPath();
             }
 
-            File f = new File(FileDirectory);
+            File BackupFile = new File(FileDirectory);
             File DBFile = new File(dbPath);
 
             Log.d("sweetsoft","exporting DB Size:"+String.valueOf(DBFile.length()));
             if(DBFile.exists())
             {
-                f.mkdirs();
-                File dir=new File(Dir);
-                dir.mkdirs();
+                BackupFile.mkdirs();
                 InputStream in = new FileInputStream(dbPath);
                 OutputStream out = new FileOutputStream(FileDirectory+"/"+FileName);
 
