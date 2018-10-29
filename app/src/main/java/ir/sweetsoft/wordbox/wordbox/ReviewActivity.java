@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.activeandroid.query.Select;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -57,7 +58,7 @@ public class ReviewActivity extends BaseWordDisplayActivity{
         imgSpeak=(ImageView)findViewById(R.id.imgSpeak);
         imgSpeak.getLayoutParams().width=scaler.WidthPercentToPixel(20);
         List<Word> words=new Select().from(Word.class).where("place=1 OR place=2 OR place=4 OR place=8 OR place=16 OR place=32").execute();
-
+        Collections.shuffle(words);
         loadWord(words,0);
     }
     private void loadWord(final List<Word> words, final int wordIndex)
@@ -83,14 +84,6 @@ public class ReviewActivity extends BaseWordDisplayActivity{
             lblPlace.setText("Place:"+words.get(wordIndex).place);
             wd = words.get(wordIndex);
             wd.lastseen=String.valueOf(System.currentTimeMillis());
-//            lblWord.setOnLongClickListener(new View.OnLongClickListener() {
-//                int presstimes=0;
-//                @Override
-//                public boolean onLongClick(View view) {
-//                    speakWords(wd.wordtext);
-//                    return false;
-//                }
-//            });
             lblWord.setOnClickListener(onWordClickListener);
             lblWord.setTypeface(SweetFonts.getFont(getApplicationContext(),SweetFonts.GOOGLESansMedium));
 
