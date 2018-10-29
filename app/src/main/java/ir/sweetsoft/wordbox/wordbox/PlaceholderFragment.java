@@ -12,6 +12,7 @@ import android.support.v7.widget.CardView;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -97,12 +98,24 @@ public class PlaceholderFragment extends Fragment {
         RelativeLayout WordList = (RelativeLayout) rootView.findViewById(R.id.wordlist);
         WordList.removeAllViews();
         List<Word> wl = new Select().from(Word.class).orderBy("place ASC").execute();
+        if(wl.size()<=0)
+        {
+            WordList.getLayoutParams().height=scaler.HeightPercentToPixel(70);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp.addRule(RelativeLayout.CENTER_HORIZONTAL,1);
+            lp.addRule(RelativeLayout.CENTER_VERTICAL,1);
+            TextView Message=new TextView(getContext());
+            Message.setText("Please Add A Word!");
+            Message.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+            Message.setTypeface(SweetFonts.getFont(getContext(), SweetFonts.GOOGLESansMedium));
+            WordList.addView(Message, lp);
+            Log.d("No Word","No Word");
+        }
+
         for (int i = 0; i < wl.size(); i++) {
 
             final long wlID = wl.get(i).getId();
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(scaler.WidthPercentToPixel(45), scaler.HeightPercentToPixel(20));
-//            lp.setMarginStart(scaler.WidthPercentToPixel(1));
-//            lp.setMarginEnd(scaler.WidthPercentToPixel(1));
             lp.setMargins(scaler.WidthPercentToPixel(1),scaler.WidthPercentToPixel(1),scaler.WidthPercentToPixel(1),scaler.WidthPercentToPixel(1));
 
             CardView Word = new CardView(activity);
@@ -180,7 +193,12 @@ public class PlaceholderFragment extends Fragment {
             Word.setId(Word.generateViewId());
             if (wl.get(i).place > 32) {
                 TitleLabel.setTextColor(Color.parseColor("#ffffff"));
-                Word.setBackgroundColor(Color.parseColor("#e21a73"));
+                CardContent.setBackgroundColor(getResources().getColor(R.color.colorGreen));
+                CardContent.getLayoutParams().height=scaler.HeightPercentToPixel(6);
+                TitleLabelParams.addRule(RelativeLayout.CENTER_IN_PARENT,1);
+//                TitleLabel.setLayoutParams(TitleLabelParams);
+                Word.setRadius(50);
+                ActionBar.setVisibility(View.GONE);
             }
             lp.bottomMargin = scaler.HeightPercentToPixel(2);
             if (i % 2 == 0) {
