@@ -21,7 +21,6 @@
         android:layout_alignParentEnd="true"
         android:id="@+id/lblWordCount"
 />
-
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,9 +32,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lblStartReview"
-        android:text="Click to review today's words!"
+        android:text="Touch to review today's words!"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/imgStartReview"/>
+        android:layout_below="@+id/imgStartReview"
+        android:layout_marginTop="5dp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
