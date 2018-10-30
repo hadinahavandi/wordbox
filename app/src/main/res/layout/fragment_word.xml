@@ -26,9 +26,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/imgStartReview"
-        android:src="@mipmap/route"
+        android:src="@mipmap/yesno"
         android:layout_centerInParent="true"
         />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lblStartReview"
+        android:text="Click to review today's words!"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/imgStartReview"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
