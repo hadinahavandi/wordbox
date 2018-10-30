@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
 
@@ -49,7 +50,8 @@ public class PlaceholderFragment extends Fragment {
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    private TextView lblLastAddDate, lblWordCount, lblLastSeen, lblTotalViewCount;
+    private TextView lblLastAddDate, lblWordCount, lblLastSeen, lblTotalViewCount,LblStartReview;
+    private ImageView ImgStartReview;
 
     public PlaceholderFragment() {
     }
@@ -233,18 +235,20 @@ public class PlaceholderFragment extends Fragment {
     }
 
     public void ShowWordSection(final View rootView, final Activity activity) {
-        ImageView imgStart = (ImageView) rootView.findViewById(R.id.imgStartReview);
-        imgStart.setOnClickListener(new View.OnClickListener() {
+        ImgStartReview=(ImageView) rootView.findViewById(R.id.imgStartReview);
+        ImgStartReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(rootView.getContext(), ReviewActivity.class);
                 activity.startActivityForResult(i, Constants.REQUEST_REVIEW);
             }
         });
+        LblStartReview = (TextView) rootView.findViewById(R.id.lblStartReview);
         lblLastAddDate = (TextView) rootView.findViewById(R.id.lblLastAddDate);
         lblWordCount = (TextView) rootView.findViewById(R.id.lblWordCount);
         lblLastSeen = (TextView) rootView.findViewById(R.id.lblLastSeen);
         lblTotalViewCount = (TextView) rootView.findViewById(R.id.lblTotalViewCount);
+        LblStartReview.setTypeface(SweetFonts.getFont(rootView.getContext(),SweetFonts.GOOGLESansMedium));
         lblLastAddDate.setTypeface(SweetFonts.getFont(rootView.getContext(),SweetFonts.GOOGLESansMedium));
         lblWordCount.setTypeface(SweetFonts.getFont(rootView.getContext(),SweetFonts.GOOGLESansMedium));
         lblLastSeen.setTypeface(SweetFonts.getFont(rootView.getContext(),SweetFonts.GOOGLESansMedium));
@@ -260,7 +264,8 @@ public class PlaceholderFragment extends Fragment {
             lblLastAddDate.setText("Last Add Date: " + Date2String(GetDateFromTime(w.getId())));
         if (w.description != null)
             lblLastSeen.setText("Last Word Seen at: " + Date2String(GetDateFromTime(Long.valueOf(w.description))));
-        imgStart.getLayoutParams().width = scaler.WidthPercentToPixel(30);
+//        ImgStartReview.getLayoutParams().width = scaler.WidthPercentToPixel(40);
+        ImgStartReview.getLayoutParams().height = scaler.WidthPercentToPixel(50);
     }
 
     private String Date2String(CivilDate cd) {
