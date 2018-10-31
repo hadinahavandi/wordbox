@@ -57,9 +57,21 @@ public class ReviewActivity extends BaseWordDisplayActivity{
         imgRefresh.getLayoutParams().width=scaler.WidthPercentToPixel(20);
         imgSpeak=(ImageView)findViewById(R.id.imgSpeak);
         imgSpeak.getLayoutParams().width=scaler.WidthPercentToPixel(20);
-        List<Word> words=new Select().from(Word.class).where("place=1 OR place=2 OR place=4 OR place=8 OR place=16 OR place=32").execute();
+        List<Word> words=Word.getTodayWords();
         Collections.shuffle(words);
         loadWord(words,0);
+    }
+    private void shiftAllRemainingWords()
+    {
+        Word.shiftAllRemainingWords();
+        showAlert("All Words Shifted to corresponding places", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                imgRefresh.setVisibility(View.GONE);
+                imgOK.setVisibility(View.GONE);
+                finish();
+            }
+        },false);
     }
     private void loadWord(final List<Word> words, final int wordIndex)
     {
@@ -110,19 +122,7 @@ public class ReviewActivity extends BaseWordDisplayActivity{
         }
         else
         {
-            List<Word> allwords=new Select().from(Word.class).where("place<33").execute();
-            for (int i=0;i<allwords.size();i++) {
-                allwords.get(i).place++;
-                allwords.get(i).save();
-            }
-            showAlert("All Words Shifted to corresponding places", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    imgRefresh.setVisibility(View.GONE);
-                    imgOK.setVisibility(View.GONE);
-                    finish();
-                }
-            },false);
+            shiftAllRemainingWords();
 
         }
 
