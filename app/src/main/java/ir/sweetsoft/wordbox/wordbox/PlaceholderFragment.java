@@ -239,8 +239,18 @@ public class PlaceholderFragment extends Fragment {
         ImgStartReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(rootView.getContext(), ReviewActivity.class);
-                activity.startActivityForResult(i, Constants.REQUEST_REVIEW);
+                List<Word> TodayWords=Word.getTodayWords();
+                if(TodayWords==null || TodayWords.isEmpty())
+                {
+                    Word.shiftAllRemainingWords();
+                    BaseWordBoxActivity theActivity=(BaseWordBoxActivity)getActivity();
+                    theActivity.showAlert("There were no words to review today.\r\n All words have been shifted to corresponding places.",null,true);
+                }
+                else
+                {
+                    Intent i = new Intent(rootView.getContext(), ReviewActivity.class);
+                    activity.startActivityForResult(i, Constants.REQUEST_REVIEW);
+                }
             }
         });
         LblStartReview = (TextView) rootView.findViewById(R.id.lblStartReview);
