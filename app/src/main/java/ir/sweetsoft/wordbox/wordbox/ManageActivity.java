@@ -38,7 +38,17 @@ public class ManageActivity extends BaseWordBoxActivity {
             public void onClick(View view) {
                 if(w==null) {
                     w = new Word();
-                    w.place=0;
+                    int place;
+                    boolean found=false;
+                    for (place=0;(!found) && place>-100;place--)
+                    {
+                        List<Word> PlaceWords=Word.getPlaceWords(place);
+                        if(PlaceWords==null || PlaceWords.isEmpty())
+                            found=true;
+                        else if(PlaceWords.size()<Constants.MAX_WORDS_IN_PLACE)
+                            found=true;
+                    }
+                    w.place=place;
                     w.addtime=String.valueOf(System.currentTimeMillis());
                 }
                 if(txtWord.getText().toString().length()>0) {
@@ -132,14 +142,6 @@ public class ManageActivity extends BaseWordBoxActivity {
                             List<EngToFa> translations=new Select().from(EngToFa.class).where("en='"+txtWord.getText().toString().toLowerCase().trim()+"'").execute();
                             if(translations!=null && translations.size()>0)
                             {
-//                                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                                    txtTranslation.setAutofillHints(translations.get(0).Persian);
-//                                }
-//                                else
-//                                {
-//                                    txtTranslation.setText(translations.get(0).Persian);
-//                                }
-
                                 txtTranslation.setText(translations.get(0).Persian);
                             }
                             else
@@ -158,12 +160,9 @@ public class ManageActivity extends BaseWordBoxActivity {
                         {
                             Log.d("loading","The Description");
                             List<EngToEng> Description=new Select().from(EngToEng.class).where("word='"+txtWord.getText().toString().toLowerCase().trim()+"'").execute();
-                            if(Description!=null && Description.size()>0)
-                            {
+                            if(Description!=null && Description.size()>0) {
 
-                                txtDescription.setText(txtDescription.getText().toString()+Description.get(0).Definition);
-//                                for(EngToEng Eng:Description)
-//                                    txtDescription.setText(txtDescription.getText().toString()+"\r\n"+Eng.Definition);
+                                txtDescription.setText(txtDescription.getText().toString() + Description.get(0).Definition);
                             }
                             else
                             {
