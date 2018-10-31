@@ -25,9 +25,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.activeandroid.query.Select;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
+import java.util.List;
+
 import javax.xml.datatype.Duration;
+
+import common.SweetDate;
+import ir.sweetsoft.wordbox.wordbox.Model.Word;
 
 public class MainActivity extends BaseWordBoxActivity {
 
@@ -127,7 +133,11 @@ public class MainActivity extends BaseWordBoxActivity {
         int id = item.getItemId();
 
             if (id == R.id.action_backup) {
-                String FileName="wb"+System.currentTimeMillis()+".db";
+                int wordCount=0;
+                List<Word> words=new Select().from(Word.class).execute();
+                if(words!=null)
+                    wordCount=words.size();
+                String FileName="WordBox"+ SweetDate.Time2String(System.currentTimeMillis(),true)+"- "+wordCount+"Words.db";
                 DBTools.Export(Environment.getExternalStorageDirectory().getAbsolutePath()+"/wordbox", FileName, getApplicationContext(), Constants.DBNAME);
                 new LovelyStandardDialog(this, LovelyStandardDialog.ButtonLayout.VERTICAL)
                         .setTopColorRes(R.color.colorOrange)

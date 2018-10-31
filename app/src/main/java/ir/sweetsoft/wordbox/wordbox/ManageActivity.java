@@ -2,10 +2,12 @@ package ir.sweetsoft.wordbox.wordbox;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +15,11 @@ import android.widget.EditText;
 import com.activeandroid.query.Select;
 
 
+import java.util.List;
+
 import common.SweetFonts;
+import ir.sweetsoft.wordbox.wordbox.Model.EngToEng;
+import ir.sweetsoft.wordbox.wordbox.Model.EngToFa;
 import ir.sweetsoft.wordbox.wordbox.Model.Word;
 
 public class ManageActivity extends BaseWordBoxActivity {
@@ -103,13 +109,69 @@ public class ManageActivity extends BaseWordBoxActivity {
         btnSave=(Button)findViewById(R.id.btnSave);
         btnDelete=(Button)findViewById(R.id.btnDelete);
         btnRestart=(Button)findViewById(R.id.btnRestart);
-        txtWord.setTypeface(SweetFonts.getFont(ManageActivity.this,SweetFonts.IRANSans));
+        txtWord.setTypeface(SweetFonts.getFont(ManageActivity.this,SweetFonts.GOOGLESansRegular));
         txtTranslation.setTypeface(SweetFonts.getFont(ManageActivity.this,SweetFonts.IRANSans));
-        txtDescription.setTypeface(SweetFonts.getFont(ManageActivity.this,SweetFonts.IRANSans));
+        txtDescription.setTypeface(SweetFonts.getFont(ManageActivity.this,SweetFonts.GOOGLESansRegular));
+
+//        txtWord.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+//        txtTranslation.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+//        txtDescription.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+//        txtSentence.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
         txtSentence.setTypeface(SweetFonts.getFont(ManageActivity.this,SweetFonts.GOOGLESansRegular));
         btnSave.setTypeface(SweetFonts.getFont(ManageActivity.this,SweetFonts.GOOGLESansMedium));
         btnDelete.setTypeface(SweetFonts.getFont(ManageActivity.this,SweetFonts.GOOGLESansMedium));
         btnRestart.setTypeface(SweetFonts.getFont(ManageActivity.this,SweetFonts.GOOGLESansMedium));
+        txtTranslation.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(txtTranslation.isFocused())
+                    if(txtWord.getText().toString().trim().length()!=0)
+                        if(txtTranslation.getText().toString().trim().length()==0)
+                        {
+                            Log.d("loading","The Translation");
+                            List<EngToFa> translations=new Select().from(EngToFa.class).where("en='"+txtWord.getText().toString().toLowerCase().trim()+"'").execute();
+                            if(translations!=null && translations.size()>0)
+                            {
+//                                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                                    txtTranslation.setAutofillHints(translations.get(0).Persian);
+//                                }
+//                                else
+//                                {
+//                                    txtTranslation.setText(translations.get(0).Persian);
+//                                }
+
+                                txtTranslation.setText(translations.get(0).Persian);
+                            }
+                            else
+                            {
+                                Log.e("Translation","No TranslationFound");
+                            }
+                        }
+            }
+        });
+        txtDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(txtDescription.isFocused())
+                    if(txtWord.getText().toString().trim().length()!=0)
+                        if(txtDescription.getText().toString().trim().length()==0)
+                        {
+                            Log.d("loading","The Description");
+                            List<EngToEng> Description=new Select().from(EngToEng.class).where("word='"+txtWord.getText().toString().toLowerCase().trim()+"'").execute();
+                            if(Description!=null && Description.size()>0)
+                            {
+
+                                txtDescription.setText(txtDescription.getText().toString()+Description.get(0).Definition);
+//                                for(EngToEng Eng:Description)
+//                                    txtDescription.setText(txtDescription.getText().toString()+"\r\n"+Eng.Definition);
+                            }
+                            else
+                            {
+                                Log.e("Description","No DescriptionFound");
+                            }
+                        }
+            }
+        });
         if(wordID>0)
         {
             w=new Select().from(Word.class).where("Id="+String.valueOf(wordID)).executeSingle();

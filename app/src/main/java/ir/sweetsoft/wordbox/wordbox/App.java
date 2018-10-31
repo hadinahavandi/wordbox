@@ -1,6 +1,7 @@
 package ir.sweetsoft.wordbox.wordbox;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.ActivityCompat;
 
@@ -15,6 +16,7 @@ public class App extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
             ActiveAndroid.initialize(this);
+            ActiveAndroid.getDatabase().disableWriteAheadLogging();
     }
     @Override
     protected void attachBaseContext(Context base) {

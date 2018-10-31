@@ -3,6 +3,7 @@ package ir.sweetsoft.wordbox.wordbox;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Build;
@@ -21,48 +22,56 @@ import java.io.OutputStream;
  */
 
 public class DBTools {
-    public static void Import(String FilePath, Context context,String DBName)
-    {
+    private static String getAppPath(Context context) {
+        PackageManager m = context.getPackageManager();
+        String APPPath = context.getPackageName();
+        PackageInfo p = null;
         try {
-            PackageManager m = context.getPackageManager();
-            String APPPath = context.getPackageName();
-            PackageInfo p = null;
-            try {
-                p = m.getPackageInfo(APPPath, 0);
-                APPPath = p.applicationInfo.dataDir;
-                Log.d("sweetsoft","importing DB In APPPath:\n"+APPPath);
-                Log.d("sweetsoft","importing DB From:"+FilePath);
+            p = m.getPackageInfo(APPPath, 0);
+            APPPath = p.applicationInfo.dataDir;
+            return APPPath;
 
-            } catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e) {
 
-                e.printStackTrace();
-            }
+            e.printStackTrace();
+        }
+        return "";
+    }
 
+    private static String getDBPath(Context context, String DBName) {
+        String Dir = getAppPath(context) + "/databases/";
+        String dbPath = Dir + DBName;
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            dbPath = context.getDatabasePath(DBName).getPath();
+        }
+        return dbPath;
+    }
 
-            String Dir=APPPath+ "/databases/";
-            String dbPath = Dir+DBName;
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                dbPath=context.getDatabasePath(DBName).getPath();
-            }
+    private static void removeMetaFiles( String dbPath)
+    {
+        File WalFile = new File(dbPath + "-wal");
+        if (WalFile.exists())
+            WalFile.delete();
+        File SHMFile = new File(dbPath + "-shm");
+        if (SHMFile.exists())
+            SHMFile.delete();
+    }
+    public static void Import(String FilePath, Context context, String DBName) {
+        try {
+
+            String dbPath = getDBPath(context, DBName);
             File ImportingFile = new File(FilePath);
-            Log.d("sweetsoft","importing DB Size:"+String.valueOf(ImportingFile.length()));
-            Log.d("sweetsoft","importing DB File:"+dbPath);
+            Log.d("sweetsoft", "importing DB Size:" + String.valueOf(ImportingFile.length()));
+            Log.d("sweetsoft", "importing DB File:" + dbPath);
 //            File DBFile = new File(dbPath);
-            if(ImportingFile.exists())
-            {
-                File WalFile=new File(dbPath+"-wal");
-                if(WalFile.exists())
-                    WalFile.delete();
-                File SHMFile=new File(dbPath+"-shm");
-                if(SHMFile.exists())
-                    SHMFile.delete();
+            if (ImportingFile.exists()) {
+                removeMetaFiles(dbPath);
                 InputStream in = new FileInputStream(FilePath);
                 OutputStream out = new FileOutputStream(dbPath);
 
                 byte[] buffer = new byte[1024];
                 int length;
-                while ((length = in.read(buffer)) > 0)
-                {
+                while ((length = in.read(buffer)) > 0) {
                     out.write(buffer, 0, length);
                 }
                 in.close();
@@ -76,46 +85,68 @@ public class DBTools {
             e.printStackTrace();
         }
     }
-    public static boolean Export(String FileDirectory,String FileName, Context context,String DBName)
-    {
-        boolean inited=false;
+
+    private static void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+    }
+
+    public static void ImportFromAssets(String FileName, Context context, String DBName) {
+
+        String dbPath = getDBPath(context, DBName);
+        AssetManager assetManager = context.getAssets();
+        InputStream in = null;
+        OutputStream out = null;
         try {
-            PackageManager m = context.getPackageManager();
-            String APPPath = context.getPackageName();
-            PackageInfo p = null;
-            try {
-                p = m.getPackageInfo(APPPath, 0);
-                APPPath = p.applicationInfo.dataDir;
-                Log.d("sweetsoft", "Exporting from AppPath:\n"+APPPath);
-                Log.d("sweetsoft", "Exporting File:\n"+FileName);
-                Log.d("sweetsoft", "Exporting to FileDirectory:\n"+FileDirectory);
-
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
+            removeMetaFiles(dbPath);
+            in = assetManager.open(FileName);
+            File outFile = new File(dbPath);
+            out = new FileOutputStream(outFile);
+            copyFile(in, out);
+        } catch (IOException e) {
+            Log.e("tag", "Failed to copy asset file: " + FileName, e);
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    // NOOP
+                }
             }
-
-            String Dir=APPPath+ "/databases/";
-            String dbPath = Dir+DBName;
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                dbPath=context.getDatabasePath(DBName).getPath();
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    // NOOP
+                }
             }
+        }
+
+
+    }
+
+    public static boolean Export(String FileDirectory, String FileName, Context context, String DBName) {
+        boolean inited = false;
+        try {
+            String dbPath = getDBPath(context,DBName);
 
             File BackupFile = new File(FileDirectory);
             File DBFile = new File(dbPath);
 
-            Log.d("sweetsoft","exporting DB Size:"+String.valueOf(DBFile.length()));
-            if(DBFile.exists())
-            {
+            Log.d("sweetsoft", "exporting DB Size:" + String.valueOf(DBFile.length()));
+            if (DBFile.exists()) {
                 BackupFile.mkdirs();
                 InputStream in = new FileInputStream(dbPath);
-                OutputStream out = new FileOutputStream(FileDirectory+"/"+FileName);
+                OutputStream out = new FileOutputStream(FileDirectory + "/" + FileName);
 
                 byte[] buffer = new byte[1024];
                 int length;
-                while ((length = in.read(buffer)) > 0)
-                {
+                while ((length = in.read(buffer)) > 0) {
                     out.write(buffer, 0, length);
-                    inited=true;
+                    inited = true;
                 }
                 in.close();
                 out.close();

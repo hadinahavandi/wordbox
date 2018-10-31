@@ -3,9 +3,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 
+import com.activeandroid.query.Select;
+
+import java.util.List;
+
 import common.SweetDisplayScaler;
+import ir.sweetsoft.wordbox.wordbox.Model.EngToFa;
+import ir.sweetsoft.wordbox.wordbox.Model.Parameter;
+import ir.sweetsoft.wordbox.wordbox.Model.Word;
 
 public class SplashActivity extends Activity {
 
@@ -20,6 +28,13 @@ public class SplashActivity extends Activity {
         imgLogo=findViewById(R.id.imgLogo);
         SweetDisplayScaler scaler=new SweetDisplayScaler(this);
         imgLogo.getLayoutParams().width=scaler.WidthPercentToPixel(50);
+        EngToFa EngToFas=new Select().from(EngToFa.class).executeSingle();
+        if(EngToFas==null || EngToFas.English.trim().length()<=0)
+        {
+            Log.d("Importing","Database");
+            DBTools.ImportFromAssets("initialdb.db",getApplicationContext(),Constants.DBNAME);
+
+        }
 //        imgLogo.getLayoutParams().width=scaler.WidthPercentToPixel(50);
         new Handler().postDelayed(new Runnable() {
 

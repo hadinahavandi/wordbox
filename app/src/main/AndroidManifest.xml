@@ -23,13 +23,13 @@
             android:value="1" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="ir.sweetsoft.wordbox.wordbox.Model.Word,ir.sweetsoft.wordbox.wordbox.Model.User,ir.sweetsoft.wordbox.wordbox.Model.Box" />
+            android:value="ir.sweetsoft.wordbox.wordbox.Model.Word,ir.sweetsoft.wordbox.wordbox.Model.User,ir.sweetsoft.wordbox.wordbox.Model.Box,ir.sweetsoft.wordbox.wordbox.Model.Parameter,ir.sweetsoft.wordbox.wordbox.Model.EngToFa,ir.sweetsoft.wordbox.wordbox.Model.EngToEng" />
 
         <provider
             android:name="com.activeandroid.content.ContentProvider"
             android:authorities="ir.sweetsoft.wordbox.wordbox"
             android:enabled="true"
-            android:exported="false"></provider>
+            android:exported="false"/>
 
         <activity
             android:name=".MainActivity"

@@ -266,6 +266,17 @@ public class PlaceholderFragment extends Fragment {
             lblLastSeen.setText("Last Word Seen at: " + Date2String(GetDateFromTime(Long.valueOf(w.description))));
 //        ImgStartReview.getLayoutParams().width = scaler.WidthPercentToPixel(40);
         ImgStartReview.getLayoutParams().height = scaler.WidthPercentToPixel(50);
+
+        if(w.translation.equals("0"))
+        {
+            LblStartReview.setText("There is no word here!");
+            ImgStartReview.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+        }
     }
 
     private String Date2String(CivilDate cd) {
