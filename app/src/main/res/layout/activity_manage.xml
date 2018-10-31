@@ -32,7 +32,6 @@
         android:layout_alignParentStart="true"
         android:id="@+id/txtWord"
         android:hint="Word"
-        android:tooltipText="Word"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
@@ -53,7 +52,6 @@
         android:ems="10"
         android:id="@+id/txtTranslation"
         android:hint="Word Translation"
-        android:tooltipText="Word Translation"
         android:layout_below="@+id/textView4"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -77,7 +75,6 @@
         android:ems="4"
         android:lines="4"
         android:hint="Description"
-        android:tooltipText="A description about this word"
         android:layout_below="@+id/textView5"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -127,7 +124,6 @@
         android:ems="10"
         android:id="@+id/txtSentence"
         android:hint="Sentences"
-        android:tooltipText="some sentences about this word"
         android:layout_below="@+id/textView6"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
