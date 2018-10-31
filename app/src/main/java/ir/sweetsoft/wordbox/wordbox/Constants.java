@@ -13,5 +13,6 @@ public class Constants {
     public static int REQUEST_SELECTPATH=6;
     public static String DBNAME="sweetybox.db";
     public static int PERMISSION_FILEACCESS=20;
+    public static int MAX_WORDS_IN_PLACE=10;
 
 }
